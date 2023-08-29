@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>First Inscription in a Block</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 40px;
+        }
+
+        .container {
+            background-color: #ffffff;
+            padding: 30px;
+            border-radius: 5px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        button {
+            background-color: #007BFF;
+            color: #ffffff;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        h3 {
+            margin-top: 30px;
+        }
+
+        iframe {
+            border: 1px solid #ccc;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>First Inscription in a Block</h2>
+
+        <label for="blockHeight">Enter Block Height:</label>
+        <input type="number" id="blockHeight" placeholder="e.g. 805241">
+
+        <button onclick="fetchInscriptionId()">Fetch InscriptionId</button>
+
+        <h3>Result:</h3>
+        <pre id="result"></pre>
+
+        <h3>Iframe Preview:</h3>
+        <iframe id="iframePreview" width="550" height="550"></iframe>
+    </div>
+
+    <script>
+        async function fetchInscriptionId() {
+            const blockHeight = document.getElementById('blockHeight').value;
+            const url = `https://api.hiro.so/ordinals/v1/inscriptions?from_genesis_block_height=${blockHeight}&to_genesis_block_height=${blockHeight}&order_by=number&order=asc`;
+            
+            try {
+                const response = await fetch(url);
+                if (!response.ok) {
+                    throw new Error("Failed to fetch data from API");
+                }
+                
+                const data = await response.json();
+                const inscriptionId = data.results[0].id;
+
+                document.getElementById('result').textContent = inscriptionId;
+                
+                // Update the iframe src to show the preview
+                document.getElementById('iframePreview').src = `https://ordinals.com/preview/${inscriptionId}`;
+
+            } catch (error) {
+                document.getElementById('result').textContent = "Error: " + error.message;
+            }
+        }
+    </script>
+</body>
+</html>
